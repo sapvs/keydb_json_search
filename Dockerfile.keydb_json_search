@@ -1,0 +1,27 @@
+FROM ubuntu:20.04 AS updated
+RUN apt update
+RUN apt install -y git make
+
+FROM updated AS redisearch 
+ARG REDISEARCH_BRANCH
+WORKDIR /keydb
+RUN git clone -b ${REDISEARCH_BRANCH} --recursive https://github.com/RediSearch/RediSearch.git
+RUN cd RediSearch && make setup
+RUN cd RediSearch && make build 
+
+FROM updated AS rejson
+ARG REJSON_BRANCH
+WORKDIR /keydb
+RUN apt install -y rustc cargo
+RUN git clone -b ${REJSON_BRANCH} --recursive https://github.com/RedisJSON/RedisJSON.git
+#RUN git clone --recursive https://github.com/RedisJSON/RedisJSON.git
+RUN cd RedisJSON && make setup
+RUN cd RedisJSON && make build
+
+
+FROM vsaps/keydb_main
+COPY --from=redisearch /keydb/RediSearch/bin/linux-x64-release/search/redisearch.so /etc/libs/redisearch.so
+COPY --from=rejson /keydb/RedisJSON/bin/linux-x64-release/target/release/deps/librejson.so /etc/libs/librejson.so
+
+COPY ./config/keydb.conf /etc/keydb/keydb.conf
+# CMD [ "--loadmodule", "/etc/libs/redisearch.so" ]
