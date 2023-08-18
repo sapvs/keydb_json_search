@@ -1,0 +1,13 @@
+FROM ubuntu:20.04 AS builder 
+
+
+ARG BRANCH
+WORKDIR /keydb
+RUN apt update
+RUN apt install -y git make python3 build-essential make
+RUN git clone -b ${BRANCH} --recursive https://github.com/RediSearch/RediSearch.git
+RUN cd RediSearch && make setup  && make build 
+
+FROM keydb_main  
+COPY --from=builder /keydb/RediSearch/bin/linux-x64-release/search/redisearch.so /etc/libs/redisearch.so
+CMD [ "--loadmodule", "/etc/libs/redisearch.so" ]

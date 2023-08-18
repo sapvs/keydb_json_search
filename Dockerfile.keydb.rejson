@@ -1,0 +1,13 @@
+FROM ubuntu:20.04 AS rejson 
+
+ARG BRANCH
+WORKDIR /keydb
+RUN apt update
+RUN apt install -y git make python3 build-essential make rustc cargo
+RUN git clone -b ${BRANCH} --recursive https://github.com/RedisJSON/RedisJSON.git
+#RUN git clone --recursive https://github.com/RedisJSON/RedisJSON.git
+RUN cd RedisJSON && make setup && make build
+
+FROM keydb_main AS prod 
+COPY --from=rejson /keydb/RedisJSON/bin/linux-x64-release/target/release/deps/librejson.so /etc/libs/redisearch.so
+CMD [ "--loadmodule", "/etc/libs/redisearch.so" ]
