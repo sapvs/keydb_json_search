@@ -20,7 +20,7 @@ docker run vsaps/keydb_jsonsearch
 
 ## Points
 * KeyDB general releases are based on Ubuntu 18.04, which are not supported by newer releases of Redis JSON and Redis Search. So this image is built using the main branch for now.
-* KeyDB crashes on startup while loading redisearch module. This happens when either using `CMD [ "--loadmodule", "/etc/libs/redisearch.so" ]` OR specifying load-module in config file
+* KeyDB [crashes on startup](https://github.com/Snapchat/KeyDB/issues/708) while loading redisearch module. This happens when either using `CMD [ "--loadmodule", "/etc/libs/redisearch.so" ]` OR specifying load-module in config file
 * Modules are loaded lazily, which does not seem to cause any issue (yet).
 
 
