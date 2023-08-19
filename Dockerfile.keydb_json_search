@@ -24,4 +24,9 @@ COPY --from=redisearch /keydb/RediSearch/bin/linux-x64-release/search/redisearch
 COPY --from=rejson /keydb/RedisJSON/bin/linux-x64-release/target/release/deps/librejson.so /etc/libs/librejson.so
 
 COPY ./config/keydb.conf /etc/keydb/keydb.conf
-# CMD [ "--loadmodule", "/etc/libs/redisearch.so" ]
+COPY ./load_module_entrypoint.sh /usr/local/bin/load_module_entrypoint.sh
+RUN chmod +x /usr/local/bin/load_module_entrypoint.sh
+
+ENTRYPOINT [ "/usr/local/bin/load_module_entrypoint.sh" ]
+
+CMD ["keydb-server","/etc/keydb/keydb.conf"]

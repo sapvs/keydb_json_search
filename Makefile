@@ -14,5 +14,3 @@ jsonsearch: keydb_main
 runjsonsearch: jsonsearch
 	docker run --rm -it keydb_json_search
 
-redisearch: keydb_main
-	docker build -t keydb_main_redisearch  --build-arg BRANCH=$(REDISEARCH_VERSION) -f Dockerfile.keydb.redisearch .
