@@ -22,13 +22,13 @@ jobs:
         username: ${{ secrets.DOCKERHUB_USERNAME }}
         password: ${{ secrets.DOCKERHUB_TOKEN }}
         
-    # - name: Build and push keydb image
-    #   uses: docker/build-push-action@v4
-    #   with:
-    #     push: true
-    #     tags: vsaps/keydb_main:latest
-    #     build-args: |
-    #       BRANCH=main       
+    - name: Build and push keydb image
+      uses: docker/build-push-action@v4
+      with:
+        push: true
+        tags: vsaps/keydb_main:latest
+        build-args: |
+          BRANCH=main       
         
     - name: Build and push json search keydb inage
       uses: docker/build-push-action@v4
